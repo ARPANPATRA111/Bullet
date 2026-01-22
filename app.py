@@ -20,7 +20,8 @@ def inject_custom_css(is_dark_theme: bool):
         input_bg = "rgba(15, 23, 42, 0.8)"
         sidebar_bg = "rgba(15, 23, 42, 0.95)"
         dropdown_bg = "#1E293B"
-        dropdown_hover = "rgba(99, 102, 241, 0.3)"
+        dropdown_hover = "rgba(99, 102, 241, 0.4)"
+        dropdown_hover_text = "#FFFFFF"
         toggle_btn_bg = "rgba(255, 255, 255, 0.1)"
         toggle_btn_border = "rgba(255, 255, 255, 0.2)"
         toggle_btn_text = "#F8FAFC"
@@ -40,7 +41,8 @@ def inject_custom_css(is_dark_theme: bool):
         input_bg = "#FFFFFF"
         sidebar_bg = "#FFFFFF"
         dropdown_bg = "#FFFFFF"
-        dropdown_hover = "rgba(99, 102, 241, 0.15)"
+        dropdown_hover = "rgba(99, 102, 241, 0.2)"
+        dropdown_hover_text = "#1E293B"
         toggle_btn_bg = "#6366F1"
         toggle_btn_border = "#6366F1"
         toggle_btn_text = "#FFFFFF"
@@ -75,6 +77,7 @@ def inject_custom_css(is_dark_theme: bool):
             --select-bg: {select_bg};
             --dropdown-bg: {dropdown_bg};
             --dropdown-hover: {dropdown_hover};
+            --dropdown-hover-text: {dropdown_hover_text};
             --toggle-btn-bg: {toggle_btn_bg};
             --toggle-btn-border: {toggle_btn_border};
             --toggle-btn-text: {toggle_btn_text};
@@ -227,20 +230,42 @@ def inject_custom_css(is_dark_theme: bool):
             background: var(--input-bg) !important;
         }}
 
-        /* Bullet cards */
+        /* Bullet cards and edit button row */
         .bullet-card {{
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 1rem 1.25rem;
-            margin-bottom: 0.5rem;
+            padding: 0.875rem 1rem;
             animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             opacity: 0;
+            margin-bottom: 0.75rem;
         }}
         .bullet-content {{
             color: var(--text-primary) !important;
             font-size: 0.95rem;
             line-height: 1.6;
+        }}
+        
+        /* Edit button in column - vertically centered */
+        div[data-testid="stHorizontalBlock"]:has(.bullet-card) {{
+            align-items: center !important;
+        }}
+        div[data-testid="stHorizontalBlock"]:has(.bullet-card) .stButton button {{
+            background: rgba(99, 102, 241, 0.1) !important;
+            border: none !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important;
+            font-size: 1rem !important;
+            color: var(--primary) !important;
+            opacity: 0.7;
+            transition: all 0.2s ease !important;
+            min-height: auto !important;
+            width: 100% !important;
+        }}
+        div[data-testid="stHorizontalBlock"]:has(.bullet-card) .stButton button:hover {{
+            opacity: 1;
+            background: rgba(99, 102, 241, 0.2) !important;
+            transform: scale(1.05);
         }}
         
         /* Copy textarea */
@@ -278,26 +303,34 @@ def inject_custom_css(is_dark_theme: bool):
             background-color: rgba(0, 0, 0, 0.5) !important;
         }}
         
-        /* Dropdown/Select Menu popover */
+        /* Dropdown/Select Menu popover - comprehensive styling */
         div[data-baseweb="popover"],
         ul[role="listbox"],
-        div[data-baseweb="menu"] {{
+        div[data-baseweb="menu"],
+        div[data-baseweb="select"] ul,
+        div[data-baseweb="popover"] > div {{
             background-color: var(--dropdown-bg) !important;
             border: 1px solid var(--border-color) !important;
             border-radius: 8px !important;
         }}
         div[data-baseweb="popover"] li,
         ul[role="listbox"] li,
-        div[data-baseweb="menu"] li {{
+        div[data-baseweb="menu"] li,
+        li[role="option"],
+        div[role="option"] {{
             color: var(--text-primary) !important;
-            background-color: transparent !important;
+            background-color: var(--dropdown-bg) !important;
         }}
         div[data-baseweb="popover"] li:hover,
         ul[role="listbox"] li:hover,
-        div[data-baseweb="menu"] li:hover {{
-            background-color: var(--dropdown-hover) !important;
+        div[data-baseweb="menu"] li:hover,
+        li[role="option"]:hover,
+        div[role="option"]:hover {{
+            background-color: var(--primary) !important;
+            color: #FFFFFF !important;
         }}
-        li[aria-selected="true"] {{
+        li[aria-selected="true"],
+        div[aria-selected="true"] {{
             background-color: var(--dropdown-hover) !important;
         }}
         
@@ -332,13 +365,45 @@ def inject_custom_css(is_dark_theme: bool):
             color: var(--text-primary) !important;
         }}
 
+        /* Form submit buttons */
+        .stFormSubmitButton button {{
+            border-radius: 10px !important;
+        }}
+
         /* Mobile */
         @media (max-width: 768px) {{
             .main-header h1 {{ font-size: 1.75rem; }}
             .main-header p {{ font-size: 0.9rem; }}
-            .block-container {{ padding-left: 1rem !important; padding-right: 1rem !important; }}
-            div[data-testid="stHorizontalBlock"] {{ flex-wrap: nowrap !important; }}
-            div[data-testid="column"] {{ min-width: 0 !important; flex: 1 !important; }}
+            .block-container {{ 
+                padding-left: 0.75rem !important; 
+                padding-right: 0.75rem !important; 
+            }}
+            /* Keep bullet row together on mobile */
+            div[data-testid="stHorizontalBlock"]:has(.bullet-card) {{
+                flex-wrap: nowrap !important;
+                gap: 0.25rem !important;
+            }}
+            div[data-testid="stHorizontalBlock"]:has(.bullet-card) > div:first-child {{
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+            }}
+            div[data-testid="stHorizontalBlock"]:has(.bullet-card) > div:last-child {{
+                flex: 0 0 40px !important;
+                min-width: 40px !important;
+            }}
+            /* Form inputs stack vertically on mobile */
+            div[data-testid="stHorizontalBlock"]:not(:has(.bullet-card)) {{ 
+                flex-wrap: wrap !important; 
+                gap: 0.5rem !important; 
+            }}
+            div[data-testid="stHorizontalBlock"]:not(:has(.bullet-card)) > div[data-testid="column"] {{ 
+                min-width: 100% !important; 
+                flex: 1 1 100% !important; 
+            }}
+            /* Ensure text areas are fully visible */
+            .stTextArea textarea {{
+                min-height: 100px !important;
+            }}
         }}
 
         #MainMenu, footer, .stDeployButton {{ visibility: hidden; }}
@@ -471,7 +536,7 @@ def main():
                 placeholder="Describe your work here... (e.g. 'Built an API, added Redis caching, reduced latency by 50%')"
             )
 
-            b_col1, b_col2 = st.columns([4, 1])
+            b_col1, b_col2 = st.columns([3, 1])
             with b_col1:
                 submitted = st.form_submit_button("Generate Bullets", type="primary", use_container_width=True)
             with b_col2:
@@ -508,20 +573,23 @@ def main():
         st.caption("Click Edit to refine any bullet point")
         
         for i, bullet in enumerate(st.session_state.bullets):
-            st.markdown(f"""
-            <div class="bullet-card" style="animation-delay: {i * 0.1}s">
-                <div class="bullet-content">* {bullet}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            if st.button(f"Edit Bullet {i+1}", key=f"edit_{i}"):
-                open_edit_modal(i, bullet, ai_service)
+            cols = st.columns([15, 1], gap="small")
+            with cols[0]:
+                st.markdown(f"""
+                <div class="bullet-card" style="animation-delay: {i * 0.1}s">
+                    <div class="bullet-content">{bullet}</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with cols[1]:
+                if st.button("✏️", key=f"edit_{i}", help="Edit"):
+                    open_edit_modal(i, bullet, ai_service)
 
         st.markdown("---")
-        final_text = "\n".join([f"* {b}" for b in st.session_state.bullets])
+        final_text = "\n\n".join(st.session_state.bullets)
         
         line_count = len(st.session_state.bullets)
-        dynamic_height = max(100, line_count * 40 + 30)
+        char_count = len(final_text)
+        dynamic_height = max(120, min(300, line_count * 60 + char_count // 10))
         
         st.text_area(
             "Copy to Clipboard", 
