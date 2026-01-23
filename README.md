@@ -1,15 +1,23 @@
 # 📝 AI Resume Bullet Point Enhancer
+**A minimalistic Streamlit application that transforms rough work descriptions into professional, ATS-friendly resume bullet points using AI.**
 
-A minimalistic Streamlit application that transforms rough work descriptions into professional, ATS-friendly resume bullet points using AI.
+<a href="https://github.com/ARPANPATRA111/Bullet">
+<img width="1919" height="1075" alt="Screenshot 2026-01-23 044903" src="https://github.com/user-attachments/assets/c93812c1-59e8-4d95-98f5-16ba2dfa7400" />
+</a>
 
-## Features
+## ✨ Features
 
-- **Generate Bullets**: Convert raw descriptions into 3 polished resume bullets
+- **Generate Bullets**: Convert raw descriptions into 2-5 polished resume bullets
 - **Style Selection**: Choose from ATS Optimized, Concise, or Impact-Focused styles
+- **Length Control**: Short (<15 words), Medium (15-25), or Long (25+) bullets
 - **Rewrite Option**: Refine individual bullets (shorter, more technical, or impact-focused)
+- **12+ Quick Start Examples**: Pre-configured templates for different roles
+- **Premium UI**: Glass-morphism design with smooth animations
+- **Theme Support**: Dark/Light mode toggle with session persistence
+- **Mobile Responsive**: Works seamlessly on all screen sizes
 - **Copy & Reset**: Easy copying and session reset functionality
 
-## Setup
+## 🚀 Setup
 
 ### 1. Clone or Download
 
@@ -42,12 +50,12 @@ pip install -r requirements.txt
    copy .env.example .env
    ```
 
-2. Edit `.env` and add your Grok API key:
+2. Edit `.env` and add your Groq API key:
    ```
-   XAI_API_KEY=your_actual_api_key_here
+   GROQ_API_KEY=your_actual_api_key_here
    ```
 
-   Get your API key at: https://console.x.ai/
+   Get your API key at: https://console.groq.com/
 
 ### 5. Run the Application
 
@@ -57,30 +65,33 @@ streamlit run app.py
 
 The app will open in your browser at `http://localhost:8501`
 
-## Usage
+## 📖 Usage
 
 1. **Describe Your Work**: Enter what you did on a project or job
 2. **Add Context**: Specify tech stack, target role, and experience level
 3. **Choose Style**: Select a bullet style (ATS Optimized, Concise, or Impact-Focused)
-4. **Generate**: Click "Generate Bullets" to get 3 professional bullets
-5. **Refine**: Select any bullet and rewrite it in a different style
-6. **Copy**: Copy all bullets to your clipboard
+4. **Set Preferences**: Adjust bullet count (2-5) and length in sidebar
+5. **Generate**: Click "Generate Bullets" to get professional bullets
+6. **Refine**: Click ✏️ on any bullet to rewrite it in a different style
+7. **Copy**: Copy all bullets from the text area to your clipboard
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 Bullet/
 ├── app.py              # Main Streamlit application
 ├── config.py           # Configuration constants
 ├── prompts.py          # AI prompt templates
-├── ai_client.py        # API integration
+├── ai_client.py        # Groq API integration
+├── schemas.py          # Pydantic validation models
 ├── validators.py       # Input validation
 ├── requirements.txt    # Python dependencies
 ├── .env.example        # Environment template
+├── report.md           # Project documentation for PPT
 └── README.md           # This file
 ```
 
-## Bullet Styles
+## 🎨 Bullet Styles
 
 | Style | Description |
 |-------|-------------|
@@ -88,24 +99,34 @@ Bullet/
 | **Concise** | Short, punchy bullets that get straight to the point |
 | **Impact-Focused** | Emphasizes outcomes and contributions over tasks |
 
-## Rewrite Options
+## 🔄 Rewrite Options
 
 | Option | Effect |
 |--------|--------|
-| **Shorter** | Reduces bullet to under 15 words |
-| **More Technical** | Adds technical depth and terminology |
-| **More Impact-Focused** | Emphasizes outcomes and value delivered |
+| **Shorter** | Condense bullet to under 15 words |
+| **More Technical** | Adds technical depth, tools, and methodology |
+| **More Impact-Focused** | Emphasizes outcomes and business value |
 
-## Notes
+## 🛠️ Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| Frontend | Streamlit with Custom CSS |
+| AI Model | LLaMA 3.3 70B Versatile |
+| API | Groq (High-speed inference) |
+| Validation | Pydantic |
+| API Client | OpenAI SDK |
+
+## 📝 Notes
 
 - The AI never invents metrics or statistics
 - Each bullet starts with an action verb
 - Bullets are adapted to your experience level
-- Quality checks ensure consistent output
+- Pydantic validation ensures consistent JSON output
 
-## Troubleshooting
+## ❓ Troubleshooting
 
-**"XAI_API_KEY not found"**
+**"GROQ_API_KEY not found"**
 - Make sure you've created a `.env` file with your API key
 - Ensure the key is correct and active
 
@@ -119,6 +140,6 @@ Bullet/
 - Include concrete tasks and technologies
 - Describe what YOU specifically did
 
-## License
+## 📄 License
 
 MIT License - Use freely for personal and commercial projects.
