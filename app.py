@@ -136,12 +136,18 @@ def inject_custom_css(is_dark_theme: bool):
             font-weight: 800;
             margin-bottom: 0.2rem;
         }}
-        .main-header p {{ color: var(--text-secondary) !important; font-size: 1rem; }}
+        .main-header p {{ 
+            color: var(--text-secondary) !important; 
+            font-size: 1.1rem; 
+            margin-top: 0.5rem;
+            letter-spacing: 0.02em;
+        }}
 
         /* Input fields with full theme support */
         .stTextInput input, .stTextArea textarea {{
             background-color: var(--input-bg) !important;
             border: 1px solid var(--border-color) !important;
+
             border-radius: 10px !important;
             color: var(--text-primary) !important;
             transition: all 0.2s ease;
@@ -235,15 +241,23 @@ def inject_custom_css(is_dark_theme: bool):
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 0.875rem 1rem;
+            padding: 1.25rem;
             animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             opacity: 0;
             margin-bottom: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }}
+        .bullet-card:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary);
         }}
         .bullet-content {{
             color: var(--text-primary) !important;
-            font-size: 0.95rem;
+            font-size: 1rem;
             line-height: 1.6;
+            font-weight: 500;
         }}
         
         /* Edit button in column - vertically centered */
@@ -255,12 +269,15 @@ def inject_custom_css(is_dark_theme: bool):
             border: none !important;
             border-radius: 8px !important;
             padding: 0.5rem !important;
-            font-size: 1rem !important;
+            font-size: 1.1rem !important;
             color: var(--primary) !important;
             opacity: 0.7;
             transition: all 0.2s ease !important;
             min-height: auto !important;
             width: 100% !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }}
         div[data-testid="stHorizontalBlock"]:has(.bullet-card) .stButton button:hover {{
             opacity: 1;
@@ -268,11 +285,23 @@ def inject_custom_css(is_dark_theme: bool):
             transform: scale(1.05);
         }}
         
+        /* Form Container Styling */
+        .form-container {{
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }}
+        
         /* Copy textarea */
         .stTextArea[data-testid="stTextArea"] textarea {{
             background-color: var(--input-bg) !important;
             color: var(--text-primary) !important;
         }}
+
         
         /* Caption */
         .stCaption, small {{
@@ -515,7 +544,10 @@ def main():
     length_instruction = BULLET_LENGTHS[length_key]
 
     with st.container():
+        st.markdown('<div class="form-container">', unsafe_allow_html=True)
         with st.form("main_form", border=False):
+            
+            st.markdown("### 📝 Describe Your Work")
             
             c1, c2 = st.columns([2, 1]) 
             with c1:
@@ -533,14 +565,16 @@ def main():
                 "Work Description", 
                 key="form_desc",
                 height=120, 
-                placeholder="Describe your work here... (e.g. 'Built an API, added Redis caching, reduced latency by 50%')"
+                placeholder="I built the authentication system using JWT tokens. It improved security and reduced login issues by 20%..."
             )
 
             b_col1, b_col2 = st.columns([3, 1])
             with b_col1:
-                submitted = st.form_submit_button("Generate Bullets", type="primary", use_container_width=True)
+                submitted = st.form_submit_button("✨ Generate Bullets", type="primary", use_container_width=True)
             with b_col2:
-                clear_clicked = st.form_submit_button("Clear", type="secondary", use_container_width=True, on_click=clear_form)
+                clear_clicked = st.form_submit_button("🗑️ Clear", type="secondary", use_container_width=True, on_click=clear_form)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
 
     should_generate = (submitted or st.session_state.trigger_gen) and not clear_clicked
     
@@ -591,13 +625,21 @@ def main():
         char_count = len(final_text)
         dynamic_height = max(120, min(300, line_count * 60 + char_count // 10))
         
+        st.markdown("#### Final Output")
         st.text_area(
             "Copy to Clipboard", 
             value=final_text, 
             height=dynamic_height,
-            key="copy_area"
+            key=f"copy_area_{len(st.session_state.bullets)}_{hash(final_text)}"
         )
         st.caption("Click inside the box and press Ctrl+A then Ctrl+C to copy all")
+
+    # Footer
+    st.markdown("""
+    <div style="text-align: center; margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border-color); color: var(--text-secondary);">
+        <small>Powered by <b>Groq</b> & <b>LLaMA 3.3</b> • Built with Streamlit</small>
+    </div>
+    """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
